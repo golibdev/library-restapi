@@ -1,4 +1,5 @@
 const Book = require('../models/bookModel')
+const User = require('../models/userModel')
 const path = require('path')
 
 // @route       /api/v1/allbook
@@ -169,20 +170,37 @@ const editBook = async (req, res) => {
     }
 }
 
-const logout = async (req, res) => {
+// @route       /api/v1/users
+// @dec         all user
+// @method      GET
+// access       PRIVATE
+const allUser = async (req, res) => {
     try {
-        
+        const users = await User.find()
+
+        if(!users) {
+            return res.status(400).json({
+                message: "Ma'lumot topilmadi"
+            })
+        } else {
+            return res.status(200).json({
+                message: "Success",
+                users
+            })
+        }
     } catch (err) {
         return res.status(500).json({
-            massage: err.message
+            message: err.message
         })
     }
 }
+
 
 module.exports = {
     getAllBook,
     addBook,
     getBook,
     deleteBook,
-    editBook
+    editBook,
+    allUser
 }

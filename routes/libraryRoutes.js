@@ -5,10 +5,12 @@ const {
     addBook,
     getBook,
     deleteBook,
-    editBook
+    editBook,
+    allUser
 } = require('../controllers/libraryController')
 
 router.get('/books', getAllBook)
+router.get('/users', allUser)
 router.post('/add', addBook)
 router.get('/book/:id', getBook)
 router.delete('/delete/:id', deleteBook)
