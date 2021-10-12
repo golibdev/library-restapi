@@ -1,0 +1,20 @@
+.bg-primary {
+    background-color: #08387F !important;
+}
+
+.navbar-brand,
+.nav-link {
+    transition: background 0.3s;
+    display: inline-block !important;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+}
+
+.nav-link {
+    text-transform: uppercase;
+    font-size: 15px;
+}
+
+.nav-link:hover {
+    background: #D72533;
+}
