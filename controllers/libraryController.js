@@ -1,5 +1,6 @@
 const Book = require('../models/bookModel')
 const User = require('../models/userModel')
+const Order = require('../models/orderModel')
 const path = require('path')
 
 // @route       /api/v1/allbook
@@ -34,41 +35,12 @@ const getAllBook = async (req, res) => {
 const addBook = async (req, res) => {
     try {
         const { title, author, year, seriaNumber, count, category } = req.body
-        const bookFile = req.files.bookFile
 
-        if(!title || !author || !year || !seriaNumber || !count || !category || !bookFile) {
+        if(!title || !author || !year || !seriaNumber || !count || !category) {
             return res.status(400).json({
                 message: "Hamma maydonlar to'ldiririlishi shart"
             })
         }
-
-        if(!req.files) {
-            return res.status(400).json({
-                message: 'Fayl yuklanmagan'
-            })
-        }
-
-        if(!bookFile.mimetype.startsWith('application/pdf')){
-            return res.status(400).json({
-                message: "Faqat *pdf formatdagi fayllarni yuklash kerak"
-            })
-        }
-
-        if(bookFile.size > process.env.MAX_UPLOAD_FILE_SIZE) {
-            return res.status(400).json({
-                message: "Fayl hajmi 100mb dan oshmasligi kerak"
-            })
-        }
-
-        bookFile.name = `file_${new Date().getTime()}${path.parse(bookFile.name).ext}`
-
-        bookFile.mv(`public/uploads/${bookFile.name}`, async (err) => {
-            if(err) {
-                return res.status(500).json({
-                    message: err.message
-                })
-            }
-        })
 
         const newBook = await Book({
             title,
@@ -76,8 +48,7 @@ const addBook = async (req, res) => {
             year,
             seriaNumber,
             count,
-            category,
-            bookFile: `/uploads/${bookFile.name}`
+            category
         })
 
         await newBook.save()
@@ -195,6 +166,62 @@ const allUser = async (req, res) => {
     }
 }
 
+// @route       /api/v1/orders/:id
+// @dec         new book order
+// @method      POST
+// access       PRIVATE
+const orderBook = async (req, res) => {
+    try {
+        const id = req.params.id
+        const book = await Book.findById(id)
+        if(!book) {
+            return res.status(400).json({
+                message: "Bunday kitob mavjud emas"
+            })
+        }
+
+        await Book.findByIdAndUpdate(id, {count: Number(book.count)-1, title: book.title, author: book.author, year: book.year, seriaNumber: book.seriaNumber, category: book.category})
+
+        const newOrder = await Order.create({
+            title: book.title,
+            author: book.author
+        })
+
+        return res.status(201).json({
+            message: "Success",
+            orders: newOrder
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+// @route       /api/v1/orders/
+// @dec         all orders
+// @method      GET
+// access       PRIVATE
+const allOrder = async (req, res)=> {
+    try {
+        const orders = await Order.find()
+
+        if(!orders) {
+            return res.status(400).json({
+                message: "Ma'lumot topilmadi"
+            })
+        }
+
+        return res.status(200).json({
+            message: "Success",
+            orders
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
 
 module.exports = {
     getAllBook,
@@ -202,5 +229,7 @@ module.exports = {
     getBook,
     deleteBook,
     editBook,
-    allUser
+    allUser,
+    orderBook,
+    allOrder
 }

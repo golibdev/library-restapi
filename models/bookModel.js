@@ -24,10 +24,6 @@ const bookSchema = new Schema({
     category: {
         type: String,
         required: true
-    },
-    bookFile: {
-        type: String,
-        required: true
     }
 }, {
     timestamps: true

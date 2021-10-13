@@ -9,10 +9,6 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
-    fullName: {
-        type: String,
-        required: true
-    },
     status: {
         type: String,
         enum: ['new', 'success'],

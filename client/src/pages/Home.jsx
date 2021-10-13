@@ -75,7 +75,7 @@ const Home = () => {
                                         <td style={{width: "500px"}} className="border"> {book.title} </td>
                                         <td style={{width: "500px"}} className="border"> {book.author} </td>
                                         <td className="border text-center">
-                                            <Link to={`/bookDetails/${book._id}`} className="btn btn-success">
+                                            <Link to={`/bookDetails/?id=${book._id}`} className="btn btn-success">
                                                 <i className="fas fa-eye text-white"></i>
                                             </Link>
                                         </td>

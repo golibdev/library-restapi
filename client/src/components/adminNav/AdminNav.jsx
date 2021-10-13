@@ -4,7 +4,7 @@ import './adminNav.css'
 const AdminNav = () => {
     return (
         <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <Link className="navbar-brand ps-3" to="/useradmin/panel">Kutubxona</Link>
+            <Link className="navbar-brand ps-3" to="/admin">Kutubxona</Link>
             <button className="btn toogle-btn" id="sidebarToggle">
                 <i className="fas fa-bars"></i>
             </button>

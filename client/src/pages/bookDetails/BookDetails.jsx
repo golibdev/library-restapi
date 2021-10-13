@@ -1,23 +1,38 @@
-import { useParams, Link } from 'react-router-dom'
+import { useLocation, Link, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from "axios"
 import './bookDetails.css'
 import Navbar from '../../components/Navbar/Navbar'
 
 const BookDetails = () => {
-    const params = useParams()
+    const history = useHistory()
+    const useQuery = () => {
+        return new URLSearchParams(useLocation().search);
+    }
+
+    const query = useQuery()
+    const name = query.get("id")
+
     const [getBook, setGetBook] = useState({})
 
-    console.log(params)
+    const orderHandler = async (e) => {
+        e.preventDefault()
+        try {
+            await axios.post(`http://localhost:4000/api/v1/orders/${name}`)
+            history.push(`/bookDetails/?id=${name}`)
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     useEffect(() => {
         const getOneBook = async () => {
-            const res = await axios.get(`http://localhost:4000/api/v1/book/${params.id}`)
+            const res = await axios.get(`http://localhost:4000/api/v1/book/${name}`)
             setGetBook(res.data.book)
         }
         getOneBook()
 
-    }, [params.id])
+    }, [name])
 
     return (
         <>
@@ -67,6 +82,16 @@ const BookDetails = () => {
                                         <tr>
                                             <th style={{width: "350px"}} className="border p-3">Seria raqami</th>
                                             <td className="border p-3">{getBook.seriaNumber}</td>
+                                        </tr>
+                                        <tr>
+                                            <th style={{width: "350px"}} className="border p-3">Buyurtma qilish</th>
+                                            <td className="border p-3">
+                                                <form onSubmit={orderHandler}>
+                                                    <button className="btn btn-success" type="submit">
+                                                        Buyurtma qilish
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
